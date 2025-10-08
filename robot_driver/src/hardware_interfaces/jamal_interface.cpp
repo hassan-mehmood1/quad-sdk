@@ -1,93 +1,131 @@
-#include "robot_driver/hardware_interfaces/spirit_interface.h"
+#include "robot_driver/hardware_interfaces/jamal_interface.h"
+#include "legged_unitree_hw/UnitreeHW.h"
+#include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Int16MultiArray.h>
+#include <trajectory_msgs/JointTrajectory.h>
+#include <trajectory_msgs/JointTrajectoryPoint.h>
 
-SpiritInterface::SpiritInterface() {}
+bool JamalInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) {
 
-void SpiritInterface::loadInterface(int argc, char** argv) {
-  /// Ghost MBLink interface class
-  mblink_.start(argc, argv);
-  mblink_.rxstart();
-  mblink_.setRetry("_UPST_ADDRESS", 255);
-  mblink_.setRetry("UPST_LOOP_DELAY", 1);
+  // Subscribe to IMU data
+  imu_sub_ = root_nh.subscribe<sensor_msgs::Imu>("/imu/data_raw", 10, &JamalInterface::imuCallback, this);
+  joint_state_sub_ = root_nh.subscribe<sensor_msgs::JointState>("/motor_states", 10, &JamalInterface::jointStateCallback, this);
+  command_pub_ = root_nh.advertise<trajectory_msgs::JointTrajectory>("/joint_controller/command", 10);
+
+  return true;
 }
 
-void SpiritInterface::unloadInterface() { mblink_.rxstop(); }
+void JamalInterface::imuCallback(const sensor_msgs::Imu::ConstPtr& msg) {
 
-bool SpiritInterface::send(
-    const quad_msgs::LegCommandArray& last_leg_command_array_msg,
-    const Eigen::VectorXd& user_tx_data) {
-  int leg_command_heartbeat = 1;
+  imu_msg_ = *msg;
 
-  bool restart_flag = (user_tx_data[0] == 1);
+}
 
-  LimbCmd_t limbcmd[4];
-  for (int i = 0; i < 4; ++i) {  // For each leg
-    // std::cout << "leg = " << i << std::endl;
-    quad_msgs::LegCommand leg_command =
-        last_leg_command_array_msg.leg_commands.at(i);
+void JamalInterface::jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg) {
+  // Resize once to 12
+  joint_state_msg_.name.resize(12);
+  joint_state_msg_.position.resize(12);
+  joint_state_msg_.velocity.resize(12);
+  joint_state_msg_.effort.resize(12);
 
-    for (int j = 0; j < 3; ++j) {  // For each joint
-      // std::cout << "joint = " << j << std::endl;
-      limbcmd[i].pos[j] =
-          leg_command_heartbeat * leg_command.motor_commands.at(j).pos_setpoint;
-      limbcmd[i].vel[j] =
-          leg_command_heartbeat * leg_command.motor_commands.at(j).vel_setpoint;
-      limbcmd[i].tau[j] =
-          leg_command_heartbeat * leg_command.motor_commands.at(j).torque_ff;
-      limbcmd[i].kp[j] = static_cast<short>(
-          leg_command_heartbeat * leg_command.motor_commands.at(j).kp);
-      limbcmd[i].kd[j] = static_cast<short>(
-          leg_command_heartbeat * leg_command.motor_commands.at(j).kd);
-      limbcmd[i].restart_flag = restart_flag;
+  for (size_t i = 0; i < msg->name.size(); ++i) {
+    const std::string& name = msg->name[i];
+
+    for (int j = 0; j < 12; ++j) {
+      if (joint_names_[j] == name) {
+        joint_state_msg_.name[j] = name;
+        joint_state_msg_.position[j] = msg->position[i];
+        joint_state_msg_.velocity[j] = msg->velocity[i];
+        joint_state_msg_.effort[j] = kt_vec_[j] * msg->effort[i];
+      }
     }
   }
+}
 
-  float data[58] = {0};
-  memcpy(data, limbcmd, 4 * sizeof(LimbCmd_t));
-  mblink_.sendUser(Eigen::Map<const Eigen::Matrix<float, 58, 1> >(data));
 
+bool JamalInterface::recv(sensor_msgs::JointState& joint_state_msg,
+                          sensor_msgs::Imu& imu_msg,
+                          const ros::Time& time,
+                          const ros::Duration& /*period*/) {
+  joint_state_msg = joint_state_msg_;
+  imu_msg = imu_msg_;
+
+  std::ostringstream oss;
+  oss << "Received Joint States (from /motor_states):\n";
+  for (int i = 0; i < 12; ++i) {
+    oss << "Joint " << i << " (" << joint_state_msg.name[i] << "): "
+        << "pos = " << joint_state_msg.position[i] << ", "
+        << "vel = " << joint_state_msg.velocity[i] << ", "
+        << "tau = " << joint_state_msg.effort[i] << "\n";
+  }
+  ROS_INFO_STREAM_THROTTLE(0.5, oss.str());
   return true;
 }
 
-bool SpiritInterface::recv(sensor_msgs::JointState& joint_state_msg,
-                           sensor_msgs::Imu& imu_msg,
-                           Eigen::VectorXd& user_rx_data) {
-  // Get the data and appropriate timestamp (this may be blocking)
-  MBData_t mbdata = mblink_.get();
 
-  // Check if data exists
-  if (mbdata.empty()) {
-    return false;
+bool JamalInterface::send(const quad_msgs::LegCommandArray& last_leg_command_array_msg, 
+  const ros::Time& /*time*/, const ros::Duration& /*period*/) {
+
+  trajectory_msgs::JointTrajectory traj_msg;
+  traj_msg.header.stamp = ros::Time::now();
+
+  // One trajectory point containing all desired values
+  trajectory_msgs::JointTrajectoryPoint point;
+
+  traj_msg.joint_names = joint_names_;
+  int leg_command_heartbeat = 1;
+
+  int a = 0; /// very important
+  for (int i = 0; i < 4; ++i) {  // For each leg
+  // std::cout << "leg = " << i << std::endl;
+  quad_msgs::LegCommand leg_command =
+      last_leg_command_array_msg.leg_commands.at(i);
+
+  for (int j = 0; j < 3; ++j) {  // For each joint
+    // std::cout << "joint = " << j << std::endl;
+    jointData_[a].posDes_ = leg_command_heartbeat * leg_command.motor_commands.at(j).pos_setpoint;
+    jointData_[a].velDes_ = leg_command_heartbeat * leg_command.motor_commands.at(j).vel_setpoint;
+    jointData_[a].ff_     = leg_command_heartbeat * leg_command.motor_commands.at(j).torque_ff;
+    a = a+1;
   }
+}
+  point.positions.clear();
+  point.velocities.clear();
+  point.effort.clear();
+  // Positions 
+  for (int i = 0; i < 12; ++i)
+    point.positions.push_back(jointData_[i].posDes_);
 
-  // Add the data corresponding to each joint
-  for (int i = 0; i < joint_names_.size(); i++) {
-    joint_state_msg.name[i] = joint_names_[i];
-    joint_state_msg.position[i] = mbdata["joint_position"][joint_indices_[i]];
-    joint_state_msg.velocity[i] = mbdata["joint_velocity"][joint_indices_[i]];
+  // Velocities
+  for (int i = 0; i < 12; ++i)
+    point.velocities.push_back(jointData_[i].velDes_);
 
-    // Convert from current to torque using linear motor model
-    joint_state_msg.effort[i] =
-        kt_vec_[i] * mbdata["joint_current"][joint_indices_[i]];
-  }
+  // Efforts (using ff_ for feedforward torques/forces)
+  for (int i = 0; i < 12; ++i)
+    point.effort.push_back(jointData_[i].ff_);
 
-  // Transform from rpy to quaternion
-  geometry_msgs::Quaternion orientation_msg;
-  tf2::Quaternion quat_tf;
-  Eigen::Vector3f rpy;
-  quat_tf.setRPY(mbdata["imu_euler"][0], mbdata["imu_euler"][1],
-                 mbdata["imu_euler"][2]);
-  tf2::convert(quat_tf, orientation_msg);
+  // Set time_from_start (required field)
+  point.time_from_start = ros::Duration(0.01); // e.g., 10ms
 
-  // Load the data into the imu message
-  imu_msg.orientation = orientation_msg;
-  imu_msg.angular_velocity.x = mbdata["imu_angular_velocity"][0];
-  imu_msg.angular_velocity.y = mbdata["imu_angular_velocity"][1];
-  imu_msg.angular_velocity.z = mbdata["imu_angular_velocity"][2];
+  // Add the point to trajectory
+  traj_msg.points.push_back(point);
 
-  // I guess the acceleration is opposite
-  imu_msg.linear_acceleration.x = -mbdata["imu_linear_acceleration"][0];
-  imu_msg.linear_acceleration.y = -mbdata["imu_linear_acceleration"][1];
-  imu_msg.linear_acceleration.z = -mbdata["imu_linear_acceleration"][2];
+  // Publish
+  command_pub_.publish(traj_msg);
 
-  return true;
+
+  ROS_INFO_STREAM_THROTTLE(0.5,
+    "Publishing Joint Commands (posDes, velDes, ff):\n" <<
+    [&]() {
+    std::ostringstream oss;
+    for (int i = 0; i < 12; ++i) {
+      oss << "Joint " << i << ": ["
+          << jointData_[i].posDes_ << ", "
+          << jointData_[i].velDes_ << ", "
+          << jointData_[i].ff_ << "]\n";
+    }
+    return oss.str();
+    }()
+    );
+    return true;
 }
