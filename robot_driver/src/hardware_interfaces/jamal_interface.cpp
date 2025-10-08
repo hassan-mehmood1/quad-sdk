@@ -1,18 +1,29 @@
 #include "robot_driver/hardware_interfaces/jamal_interface.h"
-#include "legged_unitree_hw/UnitreeHW.h"
 #include <std_msgs/Float64MultiArray.h>
 #include <std_msgs/Int16MultiArray.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <trajectory_msgs/JointTrajectoryPoint.h>
 
-bool JamalInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) {
+JamalInterface::JamalInterface() {}
+
+// void JamalInterface::loadInterface(int argc, char** argv) {
+//   /// Ghost MBLink interface class
+//   mblink_.start(argc, argv);
+//   mblink_.rxstart();
+//   mblink_.setRetry("_UPST_ADDRESS", 255);
+//   mblink_.setRetry("UPST_LOOP_DELAY", 1);
+// }
+
+// void JamalInterface::unloadInterface() { mblink_.rxstop(); }
+
+void JamalInterface::init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) {
 
   // Subscribe to IMU data
   imu_sub_ = root_nh.subscribe<sensor_msgs::Imu>("/imu/data_raw", 10, &JamalInterface::imuCallback, this);
   joint_state_sub_ = root_nh.subscribe<sensor_msgs::JointState>("/motor_states", 10, &JamalInterface::jointStateCallback, this);
   command_pub_ = root_nh.advertise<trajectory_msgs::JointTrajectory>("/joint_controller/command", 10);
 
-  return true;
+  // return true;
 }
 
 void JamalInterface::imuCallback(const sensor_msgs::Imu::ConstPtr& msg) {

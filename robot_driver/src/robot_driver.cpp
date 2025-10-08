@@ -15,7 +15,7 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
       robot_heartbeat_topic, single_joint_cmd_topic, mocap_topic,
       control_restart_flag_topic, body_force_estimate_topic;
   quad_utils::loadROSParamDefault(nh_, "robot_type", robot_name,
-                                  std::string("spirit"));
+                                  std::string("jamal"));
   quad_utils::loadROSParam(nh_, "topics/state/imu", imu_topic);
   quad_utils::loadROSParam(nh_, "topics/state/joints", joint_state_topic);
   quad_utils::loadROSParam(nh_, "topics/local_plan", local_plan_topic);
@@ -120,9 +120,16 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
 
   // Initialize hardware interface
   if (is_hardware_) {
-    if (robot_name == "spirit" || robot_name == "spirit_rotors") {
-      hardware_interface_ = std::make_shared<SpiritInterface>();
-    } else {
+    if (robot_name == "jamal") {
+      hardware_interface_ = std::make_shared<JamalInterface>();
+    } 
+    // if (robot_name == "spirit" || robot_name == "spirit_rotors") {
+    //   hardware_interface_ = std::make_shared<SpiritInterface>();
+    // } 
+    // else if(robot_name == "jamal") {
+    //   hardware_interface_ = std::make_shared<JamalInterface>();
+    // } 
+    else {
       ROS_ERROR_STREAM("Invalid robot name " << robot_name
                                              << ", returning nullptr");
       hardware_interface_ = nullptr;
@@ -351,8 +358,14 @@ void RobotDriver::checkMessagesForSafety() {
 bool RobotDriver::updateState() {
   if (is_hardware_) {
     // grab data from hardware
+    ////////////////////////////////////////////////////////////////////
+    // bool fully_populated = hardware_interface_->recv(
+    //     last_joint_state_msg_, last_imu_msg_, user_rx_data_);
+
+    ros::Time t_now = ros::Time::now();
+    ros::Duration period = ros::Duration(1.0 / update_rate_);  // control loop period
     bool fully_populated = hardware_interface_->recv(
-        last_joint_state_msg_, last_imu_msg_, user_rx_data_);
+        last_joint_state_msg_, last_imu_msg_, t_now, period);
 
     // load robot sensor message to state estimator class
     if (fully_populated) {
@@ -580,9 +593,15 @@ void RobotDriver::publishControl(bool is_valid) {
 
   // Send command to the robot
   if (is_hardware_ && is_valid) {
+    ////////////////////////////////////////////////////////////////////////
+    // ros::Time t_start = ros::Time::now();
+    // hardware_interface_->send(leg_command_array_msg_, user_tx_data_);
+    // ros::Time t_end = ros::Time::now();
     ros::Time t_start = ros::Time::now();
-    hardware_interface_->send(leg_command_array_msg_, user_tx_data_);
+    ros::Duration period = ros::Duration(1.0 / update_rate_);
+    hardware_interface_->send(leg_command_array_msg_, t_start, period);
     ros::Time t_end = ros::Time::now();
+
 
     ROS_INFO_THROTTLE(1.0, "t_diff_mb_send = %6.4f", (t_end - t_start).toSec());
   }
@@ -602,9 +621,9 @@ void RobotDriver::spin() {
   ros::Rate r(update_rate_);
 
   // Start the mblink connection
-  if (is_hardware_) {
-    hardware_interface_->loadInterface(argc_, argv_);
-  }
+  // if (is_hardware_) {
+  //   hardware_interface_->loadInterface(argc_, argv_);
+  // }
 
   while (ros::ok()) {
     // Collect new messages on subscriber topics and publish heartbeat
@@ -626,7 +645,7 @@ void RobotDriver::spin() {
   }
 
   // Close the mblink connection
-  if (is_hardware_) {
-    hardware_interface_->unloadInterface();
-  }
+  // if (is_hardware_) {
+  //   hardware_interface_->unloadInterface();
+  // }
 }

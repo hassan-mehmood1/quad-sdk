@@ -73,5 +73,5 @@ robot_driver:
   safety_kp: [0, 0, 0]
   safety_kd: [2, 2, 2]
   stand_joint_angles: [0.0, 0.48, 1.12]
-  sit_joint_angles: [0.0, 0.2, 0.2]
+  sit_joint_angles: [0.0, 0.0, 0.0]
   torque_limit: [48, 48, 48]

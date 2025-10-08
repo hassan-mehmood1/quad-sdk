@@ -32,27 +32,34 @@ class HardwareInterface {
    * @return Constructed object of type HardwareInterface
    */
   HardwareInterface();
+  virtual ~HardwareInterface() = default; 
 
   /**
    * @brief Load the hardware interface
    * @param[in] argc Argument count
    * @param[in] argv Argument vector
    */
-  virtual void loadInterface(int argc, char** argv) = 0;
+//   virtual void loadInterface(int argc, char** argv) = 0;
 
   /**
    * @brief Unload the hardware interface
    */
-  virtual void unloadInterface() = 0;
-
+//   virtual void unloadInterface() = 0;
+//   bool init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) override;
+//   virtual bool init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) = 0;
+  void init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh);
+  void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
+  void jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg);
   /**
    * @brief Send commands to the robot
    * @param[in] leg_command_array_msg Message containing leg commands
    * @param[in] user_data Vector containing user data
    * @return boolean indicating success of transmission
    */
+//   virtual bool send(const quad_msgs::LegCommandArray& leg_command_array_msg,
+//                     const Eigen::VectorXd& user_tx_data) = 0;
   virtual bool send(const quad_msgs::LegCommandArray& leg_command_array_msg,
-                    const Eigen::VectorXd& user_tx_data) = 0;
+                    const ros::Time& time, const ros::Duration& period);
 
   /**
    * @brief Recieve data from the robot
@@ -61,9 +68,18 @@ class HardwareInterface {
    * @param[out] user_data Vector containing user data
    * @return Boolean for whether data was successfully received
    */
+//   virtual bool recv(sensor_msgs::JointState& joint_state_msg,
+//                     sensor_msgs::Imu& imu_msg,
+//                     Eigen::VectorXd& user_rx_data) = 0;
   virtual bool recv(sensor_msgs::JointState& joint_state_msg,
-                    sensor_msgs::Imu& imu_msg,
-                    Eigen::VectorXd& user_rx_data) = 0;
+                    sensor_msgs::Imu& imu_msg, const ros::Time& time,
+                    const ros::Duration& period);
+//  private:
+//   ros::Publisher command_pub_;
+//   ros::Subscriber joint_state_sub_;
+//   ros::Subscriber imu_sub_;
+//   sensor_msgs::Imu imu_msg_;
+//   sensor_msgs::JointState joint_state_msg_;
 
  protected:
 };

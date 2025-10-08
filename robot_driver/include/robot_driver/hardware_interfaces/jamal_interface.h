@@ -8,9 +8,12 @@
 #include <tf2/LinearMath/Quaternion.h>
 #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <eigen3/Eigen/Eigen>
-#include <mblink/mblink.hpp>
+// #include <mblink/mblink.hpp>
 #include <trajectory_msgs/JointTrajectory.h>
 #include <std_msgs/Float64MultiArray.h>
+// #include <mblink/mblink.hpp>
+
+// using gr::MBLink;
 
 struct JamalMotorData {
   double pos_, vel_, tau_;                 // Feedback from hardware
@@ -19,9 +22,22 @@ struct JamalMotorData {
 
 class JamalInterface : public HardwareInterface {
  public:
-  JamalInterface() = default;
+  // JamalInterface() = default;
+  JamalInterface();
+  /**
+   * @brief Load the hardware interface
+   * @param[in] argc Argument count
+   * @param[in] argv Argument vector
+   */
+  // virtual void loadInterface(int argc, char** argv);
 
-  bool init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) override;
+  /**
+   * @brief Unload the hardware interface
+   */
+  // virtual void unloadInterface();
+
+  // bool init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh) override;
+  void init(ros::NodeHandle& root_nh, ros::NodeHandle& robot_hw_nh);
   void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
   void jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg);
 
@@ -30,6 +46,7 @@ class JamalInterface : public HardwareInterface {
   virtual bool recv(sensor_msgs::JointState& joint_state_msg,
                     sensor_msgs::Imu& imu_msg, const ros::Time& time,
                     const ros::Duration& period);
+                    
 
   std::vector<std::string> joint_names_ = {"8",  "0", "1", "9",  "2", "3",
                                            "10", "4", "5", "11", "6", "7"};

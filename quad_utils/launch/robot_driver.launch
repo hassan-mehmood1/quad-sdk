@@ -6,7 +6,7 @@
         <arg name="robot_type" value="$(arg robot_type)"/>
     </include>
 
-    <arg name="mocap" default="true" />
+    <arg name="mocap" default="false" />
     <arg name="logging" default="false" />
     <arg name="controller" default="inverse_dynamics" />
     <arg name="is_hardware" default="true" />
