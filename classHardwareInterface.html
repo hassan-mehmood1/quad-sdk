@@ -87,7 +87,7 @@ $(function(){ initResizable(false); });
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="classHardwareInterface-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">HardwareInterface Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
+  <div class="headertitle"><div class="title">HardwareInterface Class Reference</div></div>
 </div><!--header-->
 <div class="contents">
 
@@ -100,11 +100,9 @@ Inheritance diagram for HardwareInterface:</div>
 <div class="dyncontent">
 <div class="center"><img src="classHardwareInterface__inherit__graph.png" border="0" usemap="#aHardwareInterface_inherit__map" alt="Inheritance graph"/></div>
 <map name="aHardwareInterface_inherit__map" id="aHardwareInterface_inherit__map">
-<area shape="rect" title="Implements an abstract class for robot hardware interfaces." alt="" coords="59,5,187,31"/>
-<area shape="rect" href="classJamalInterface.html" title=" " alt="" coords="5,79,113,105"/>
-<area shape="poly" title=" " alt="" coords="104,44,72,80,68,77,100,40"/>
-<area shape="rect" href="classSpiritInterface.html" title="Hardware interface for the Spirit40 quadruped from Ghost Robotics." alt="" coords="137,79,240,105"/>
-<area shape="poly" title=" " alt="" coords="146,40,179,77,175,80,142,44"/>
+<area shape="rect" title="Implements an abstract class for robot hardware interfaces." alt="" coords="5,5,134,31"/>
+<area shape="rect" href="classJamalInterface.html" title=" " alt="" coords="16,79,123,105"/>
+<area shape="poly" title=" " alt="" coords="72,46,72,79,67,79,67,46"/>
 </map>
 <center><span class="legend">[<a href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -113,18 +111,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1ab7cedbe71c6779316115cbcbbb8069" id="r_a1ab7cedbe71c6779316115cbcbbb8069"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a1ab7cedbe71c6779316115cbcbbb8069">HardwareInterface</a> ()</td></tr>
 <tr class="memdesc:a1ab7cedbe71c6779316115cbcbbb8069"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructor for <a class="el" href="classHardwareInterface.html" title="Implements an abstract class for robot hardware interfaces.">HardwareInterface</a>.  <br /></td></tr>
 <tr class="separator:a1ab7cedbe71c6779316115cbcbbb8069"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:adfc4b1c2eca98ebf167de66e9fcfd632" id="r_adfc4b1c2eca98ebf167de66e9fcfd632"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#adfc4b1c2eca98ebf167de66e9fcfd632">loadInterface</a> (int argc, char **argv)=0</td></tr>
-<tr class="memdesc:adfc4b1c2eca98ebf167de66e9fcfd632"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the hardware interface.  <br /></td></tr>
-<tr class="separator:adfc4b1c2eca98ebf167de66e9fcfd632"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f807b2896484f6dc4c0bae53102c007" id="r_a5f807b2896484f6dc4c0bae53102c007"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a5f807b2896484f6dc4c0bae53102c007">unloadInterface</a> ()=0</td></tr>
-<tr class="memdesc:a5f807b2896484f6dc4c0bae53102c007"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unload the hardware interface.  <br /></td></tr>
-<tr class="separator:a5f807b2896484f6dc4c0bae53102c007"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9b89cbeeb00cadd1fb7df8e6da456696" id="r_a9b89cbeeb00cadd1fb7df8e6da456696"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a9b89cbeeb00cadd1fb7df8e6da456696">send</a> (const quad_msgs::LegCommandArray &amp;leg_command_array_msg, const Eigen::VectorXd &amp;user_tx_data)=0</td></tr>
-<tr class="memdesc:a9b89cbeeb00cadd1fb7df8e6da456696"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send commands to the robot.  <br /></td></tr>
-<tr class="separator:a9b89cbeeb00cadd1fb7df8e6da456696"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a953400a4892d8a8bfe67c84233f9eda7" id="r_a953400a4892d8a8bfe67c84233f9eda7"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a953400a4892d8a8bfe67c84233f9eda7">recv</a> (sensor_msgs::JointState &amp;joint_state_msg, sensor_msgs::Imu &amp;imu_msg, Eigen::VectorXd &amp;user_rx_data)=0</td></tr>
-<tr class="memdesc:a953400a4892d8a8bfe67c84233f9eda7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recieve data from the robot.  <br /></td></tr>
-<tr class="separator:a953400a4892d8a8bfe67c84233f9eda7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ec0fef51e96e222823091f32d8f41eb" id="r_a0ec0fef51e96e222823091f32d8f41eb"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a0ec0fef51e96e222823091f32d8f41eb">init</a> (ros::NodeHandle &amp;root_nh, ros::NodeHandle &amp;robot_hw_nh)</td></tr>
+<tr class="memdesc:a0ec0fef51e96e222823091f32d8f41eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Load the hardware interface.  <br /></td></tr>
+<tr class="separator:a0ec0fef51e96e222823091f32d8f41eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a99c1a592962969826c3751593959d56b" id="r_a99c1a592962969826c3751593959d56b"><td class="memItemLeft" align="right" valign="top"><a id="a99c1a592962969826c3751593959d56b" name="a99c1a592962969826c3751593959d56b"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>imuCallback</b> (const sensor_msgs::Imu::ConstPtr &amp;msg)</td></tr>
+<tr class="separator:a99c1a592962969826c3751593959d56b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeaf193a1644870916c67f162b6ab646f" id="r_aeaf193a1644870916c67f162b6ab646f"><td class="memItemLeft" align="right" valign="top"><a id="aeaf193a1644870916c67f162b6ab646f" name="aeaf193a1644870916c67f162b6ab646f"></a>
+void&#160;</td><td class="memItemRight" valign="bottom"><b>jointStateCallback</b> (const sensor_msgs::JointState::ConstPtr &amp;msg)</td></tr>
+<tr class="separator:aeaf193a1644870916c67f162b6ab646f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a629e293517bda2093c98a3006fb218c1" id="r_a629e293517bda2093c98a3006fb218c1"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a629e293517bda2093c98a3006fb218c1">send</a> (const quad_msgs::LegCommandArray &amp;leg_command_array_msg, const ros::Time &amp;time, const ros::Duration &amp;period)</td></tr>
+<tr class="memdesc:a629e293517bda2093c98a3006fb218c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Send commands to the robot.  <br /></td></tr>
+<tr class="separator:a629e293517bda2093c98a3006fb218c1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3cae5a90c091ccccc2fa3838a1004aa6" id="r_a3cae5a90c091ccccc2fa3838a1004aa6"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="#a3cae5a90c091ccccc2fa3838a1004aa6">recv</a> (sensor_msgs::JointState &amp;joint_state_msg, sensor_msgs::Imu &amp;imu_msg, const ros::Time &amp;time, const ros::Duration &amp;period)</td></tr>
+<tr class="memdesc:a3cae5a90c091ccccc2fa3838a1004aa6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recieve data from the robot.  <br /></td></tr>
+<tr class="separator:a3cae5a90c091ccccc2fa3838a1004aa6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Implements an abstract class for robot hardware interfaces. </p>
@@ -135,6 +136,9 @@ Public Member Functions</h2></td></tr>
 
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
           <td class="memname">HardwareInterface::HardwareInterface </td>
@@ -143,6 +147,11 @@ Public Member Functions</h2></td></tr>
           <td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">default</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 
 <p>Constructor for <a class="el" href="classHardwareInterface.html" title="Implements an abstract class for robot hardware interfaces.">HardwareInterface</a>. </p>
@@ -151,48 +160,39 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="adfc4b1c2eca98ebf167de66e9fcfd632" name="adfc4b1c2eca98ebf167de66e9fcfd632"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adfc4b1c2eca98ebf167de66e9fcfd632">&#9670;&#160;</a></span>loadInterface()</h2>
+<a id="a0ec0fef51e96e222823091f32d8f41eb" name="a0ec0fef51e96e222823091f32d8f41eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ec0fef51e96e222823091f32d8f41eb">&#9670;&#160;</a></span>init()</h2>
 
 <div class="memitem">
 <div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual void HardwareInterface::loadInterface </td>
+          <td class="memname">void HardwareInterface::init </td>
           <td>(</td>
-          <td class="paramtype">int</td>          <td class="paramname"><span class="paramname"><em>argc</em></span>, </td>
+          <td class="paramtype">ros::NodeHandle &amp;</td>          <td class="paramname"><span class="paramname"><em>root_nh</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">char **</td>          <td class="paramname"><span class="paramname"><em>argv</em></span>&#160;)</td>
+          <td class="paramtype">ros::NodeHandle &amp;</td>          <td class="paramname"><span class="paramname"><em>robot_hw_nh</em></span>&#160;)</td>
         </tr>
       </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
 </div><div class="memdoc">
 
 <p>Load the hardware interface. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramdir">[in]</td><td class="paramname">argc</td><td>Argument count </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">argv</td><td>Argument vector </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">argv</td><td>Argument vector</td></tr>
   </table>
   </dd>
 </dl>
-
-<p>Implemented in <a class="el" href="classSpiritInterface.html#ac03865f681a3e86f33cbb963e3b72c9d">SpiritInterface</a>.</p>
+<p>Unload the hardware interface </p>
 
 </div>
 </div>
-<a id="a953400a4892d8a8bfe67c84233f9eda7" name="a953400a4892d8a8bfe67c84233f9eda7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a953400a4892d8a8bfe67c84233f9eda7">&#9670;&#160;</a></span>recv()</h2>
+<a id="a3cae5a90c091ccccc2fa3838a1004aa6" name="a3cae5a90c091ccccc2fa3838a1004aa6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3cae5a90c091ccccc2fa3838a1004aa6">&#9670;&#160;</a></span>recv()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -201,7 +201,7 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual bool HardwareInterface::recv </td>
+          <td class="memname">bool HardwareInterface::recv </td>
           <td>(</td>
           <td class="paramtype">sensor_msgs::JointState &amp;</td>          <td class="paramname"><span class="paramname"><em>joint_state_msg</em></span>, </td>
         </tr>
@@ -213,12 +213,17 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">Eigen::VectorXd &amp;</td>          <td class="paramname"><span class="paramname"><em>user_rx_data</em></span>&#160;)</td>
+          <td class="paramtype">const ros::Time &amp;</td>          <td class="paramname"><span class="paramname"><em>time</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const ros::Duration &amp;</td>          <td class="paramname"><span class="paramname"><em>period</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -234,12 +239,12 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Boolean for whether data was successfully received </dd></dl>
 
-<p>Implemented in <a class="el" href="classSpiritInterface.html#ab4f732b9eb83bf1d532d4b3f65a4529c">SpiritInterface</a>.</p>
+<p>Reimplemented in <a class="el" href="classJamalInterface.html#a419e078b74ce41561689e19808368029">JamalInterface</a>.</p>
 
 </div>
 </div>
-<a id="a9b89cbeeb00cadd1fb7df8e6da456696" name="a9b89cbeeb00cadd1fb7df8e6da456696"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9b89cbeeb00cadd1fb7df8e6da456696">&#9670;&#160;</a></span>send()</h2>
+<a id="a629e293517bda2093c98a3006fb218c1" name="a629e293517bda2093c98a3006fb218c1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a629e293517bda2093c98a3006fb218c1">&#9670;&#160;</a></span>send()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -248,19 +253,24 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">virtual bool HardwareInterface::send </td>
+          <td class="memname">bool HardwareInterface::send </td>
           <td>(</td>
           <td class="paramtype">const quad_msgs::LegCommandArray &amp;</td>          <td class="paramname"><span class="paramname"><em>leg_command_array_msg</em></span>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">const Eigen::VectorXd &amp;</td>          <td class="paramname"><span class="paramname"><em>user_tx_data</em></span>&#160;)</td>
+          <td class="paramtype">const ros::Time &amp;</td>          <td class="paramname"><span class="paramname"><em>time</em></span>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const ros::Duration &amp;</td>          <td class="paramname"><span class="paramname"><em>period</em></span>&#160;)</td>
         </tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -275,41 +285,13 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>boolean indicating success of transmission </dd></dl>
 
-<p>Implemented in <a class="el" href="classSpiritInterface.html#a2fec6388d38268d0902e8d14b5ca2589">SpiritInterface</a>.</p>
-
-</div>
-</div>
-<a id="a5f807b2896484f6dc4c0bae53102c007" name="a5f807b2896484f6dc4c0bae53102c007"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5f807b2896484f6dc4c0bae53102c007">&#9670;&#160;</a></span>unloadInterface()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual void HardwareInterface::unloadInterface </td>
-          <td>(</td>
-          <td class="paramname"><span class="paramname"><em></em></span></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Unload the hardware interface. </p>
-
-<p>Implemented in <a class="el" href="classSpiritInterface.html#acb8c0ec8321cd14a6cdc3371666d1092">SpiritInterface</a>.</p>
+<p>Reimplemented in <a class="el" href="classJamalInterface.html#a157778f8b35c6e79ad191b2d3f36ee38">JamalInterface</a>.</p>
 
 </div>
 </div>
 <hr/>The documentation for this class was generated from the following files:<ul>
 <li>robot_driver/include/robot_driver/hardware_interfaces/<a class="el" href="hardware__interface_8h_source.html">hardware_interface.h</a></li>
+<li>robot_driver/src/hardware_interfaces/<b>hardware_interface copy.cpp</b></li>
 <li>robot_driver/src/hardware_interfaces/<b>hardware_interface.cpp</b></li>
 </ul>
 </div><!-- contents -->
