@@ -72,6 +72,29 @@ void quadNLP::loadCasadiFuncs() {
   eval_sparsity_vec_[A1][JAC] = eval_jac_g_a1_sparsity_out;
   eval_sparsity_vec_[A1][HESS] = eval_hess_g_a1_sparsity_out;
 
+  // Load basic leg controller functions for the A1 platform
+  eval_vec_[JAMAL][FUNC] = eval_g_jamal;
+  eval_vec_[JAMAL][JAC] = eval_jac_g_jamal;
+  eval_vec_[JAMAL][HESS] = eval_hess_g_jamal;
+  eval_work_vec_[JAMAL][FUNC] = eval_g_jamal_work;
+  eval_work_vec_[JAMAL][JAC] = eval_jac_g_jamal_work;
+  eval_work_vec_[JAMAL][HESS] = eval_hess_g_jamal_work;
+  eval_incref_vec_[JAMAL][FUNC] = eval_g_jamal_incref;
+  eval_incref_vec_[JAMAL][JAC] = eval_jac_g_jamal_incref;
+  eval_incref_vec_[JAMAL][HESS] = eval_hess_g_jamal_incref;
+  eval_decref_vec_[JAMAL][FUNC] = eval_g_jamal_decref;
+  eval_decref_vec_[JAMAL][JAC] = eval_jac_g_jamal_decref;
+  eval_decref_vec_[JAMAL][HESS] = eval_hess_g_jamal_decref;
+  eval_checkout_vec_[JAMAL][FUNC] = eval_g_jamal_checkout;
+  eval_checkout_vec_[JAMAL][JAC] = eval_jac_g_jamal_checkout;
+  eval_checkout_vec_[JAMAL][HESS] = eval_hess_g_jamal_checkout;
+  eval_release_vec_[JAMAL][FUNC] = eval_g_jamal_release;
+  eval_release_vec_[JAMAL][JAC] = eval_jac_g_jamal_release;
+  eval_release_vec_[JAMAL][HESS] = eval_hess_g_jamal_release;
+  eval_sparsity_vec_[JAMAL][FUNC] = eval_g_jamal_sparsity_out;
+  eval_sparsity_vec_[JAMAL][JAC] = eval_jac_g_jamal_sparsity_out;
+  eval_sparsity_vec_[JAMAL][HESS] = eval_hess_g_jamal_sparsity_out;
+
   // Load simple to simple functions - for adaptive complexity
   eval_vec_[SIMPLE_TO_SIMPLE][FUNC] = eval_g_leg_simple;
   eval_vec_[SIMPLE_TO_SIMPLE][JAC] = eval_jac_g_leg_simple;

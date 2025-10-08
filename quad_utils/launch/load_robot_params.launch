@@ -1,5 +1,5 @@
 <launch>
-    <arg name="robot_type" default="spirit"/>
+    <arg name="robot_type" default="jamal"/>
 
     <rosparam command="load" file="$(find quad_utils)/config/topics_robot.yaml" />
     <param name="enable_statistics" type="bool" value="true" />
@@ -8,6 +8,12 @@
         <rosparam command="load" file="$(find quad_utils)/config/spirit.yaml" />
         <param name="robot_description_sdf" textfile="$(find spirit_description)/sdf_mesh/spirit.sdf" />
         <param name="robot_description" command="cat $(find spirit_description)/urdf/spirit.urdf" />
+    </group>
+
+    <group if="$(eval arg('robot_type') == 'jamal')">
+        <rosparam command="load" file="$(find quad_utils)/config/jamal.yaml" />
+        <param name="robot_description_sdf" textfile="$(find jamal_description)/sdf_mesh/jamal.sdf" />
+        <param name="robot_description" command="cat $(find jamal_description)/urdf/jamal.urdf" />
     </group>
 
     <group if="$(eval arg('robot_type') == 'spirit_rotors')">

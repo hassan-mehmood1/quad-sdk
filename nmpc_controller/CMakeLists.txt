@@ -72,6 +72,9 @@ add_library(nmpc_controller
   src/quad_nlp_utils.cpp
   src/adaptive_complexity_utils.cpp
   src/nmpc_controller.cpp
+  src/gen/eval_g_jamal.cpp
+  src/gen/eval_hess_g_jamal.cpp
+  src/gen/eval_jac_g_jamal.cpp
 )
 target_link_libraries(nmpc_controller 
   Eigen3::Eigen 
