@@ -3,7 +3,7 @@ var searchData=
   ['randomstate_0',['randomState',['../classPlannerClass.html#adfa162a71189a47726e424ee08923502',1,'PlannerClass']]],
   ['readimu_1',['readIMU',['../classStateEstimator.html#abc9669241d99afa63e5fde182f974476',1,'StateEstimator']]],
   ['readjointencoder_2',['readJointEncoder',['../classStateEstimator.html#a52ee7ae6acb22cd43886e8f7c74b8703',1,'StateEstimator']]],
-  ['recv_3',['recv',['../classHardwareInterface.html#a953400a4892d8a8bfe67c84233f9eda7',1,'HardwareInterface::recv()'],['../classSpiritInterface.html#ab4f732b9eb83bf1d532d4b3f65a4529c',1,'SpiritInterface::recv(sensor_msgs::JointState &amp;joint_state_msg, sensor_msgs::Imu &amp;imu_msg, Eigen::VectorXd &amp;user_rx_data)'],['../classSpiritInterface.html#ab15afb8114984e6e8b7a50e11404d994',1,'SpiritInterface::recv(sensor_msgs::JointState &amp;joint_state_msg, sensor_msgs::Imu &amp;imu_msg, Eigen::VectorXd &amp;user_rx_data)']]],
+  ['recv_3',['recv',['../classHardwareInterface.html#a953400a4892d8a8bfe67c84233f9eda7',1,'HardwareInterface::recv()'],['../classSpiritInterface.html#ab4f732b9eb83bf1d532d4b3f65a4529c',1,'SpiritInterface::recv()']]],
   ['remoteheartbeat_4',['RemoteHeartbeat',['../classRemoteHeartbeat.html#a8fbd50f3bf1b50a1cf4c3008940e7165',1,'RemoteHeartbeat']]],
   ['remoteheartbeatcallback_5',['remoteHeartbeatCallback',['../classRobotDriver.html#a2f0d26101ff056180e925211290f405c',1,'RobotDriver']]],
   ['removeedge_6',['removeEdge',['../classGraphClass.html#ac6775293717a51d5c223b5f6b3a9425a',1,'GraphClass']]],

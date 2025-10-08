@@ -41,7 +41,7 @@ var searchData=
   ['loadflat_38',['loadFlat',['../classFastTerrainMap.html#ab9c483d6d2e30a045f0c731427586150',1,'FastTerrainMap']]],
   ['loadflatelevated_39',['loadFlatElevated',['../classFastTerrainMap.html#a0cee2a4343a1ffbfb71a8e96e7379b38',1,'FastTerrainMap']]],
   ['loadfootplanmsgs_40',['loadFootPlanMsgs',['../classLocalFootstepPlanner.html#a616b9bc487a93b0554d9db7eb4183b3e',1,'LocalFootstepPlanner']]],
-  ['loadinterface_41',['loadInterface',['../classHardwareInterface.html#adfc4b1c2eca98ebf167de66e9fcfd632',1,'HardwareInterface::loadInterface()'],['../classSpiritInterface.html#ac03865f681a3e86f33cbb963e3b72c9d',1,'SpiritInterface::loadInterface(int argc, char **argv)'],['../classSpiritInterface.html#a056e4f4c03354a2337faf7a667ccba0d',1,'SpiritInterface::loadInterface(int argc, char **argv)']]],
+  ['loadinterface_41',['loadInterface',['../classHardwareInterface.html#adfc4b1c2eca98ebf167de66e9fcfd632',1,'HardwareInterface::loadInterface()'],['../classSpiritInterface.html#ac03865f681a3e86f33cbb963e3b72c9d',1,'SpiritInterface::loadInterface()']]],
   ['loadmapfromcsv_42',['loadMapFromCSV',['../classTerrainMapPublisher.html#a633f664cc608dc2478948c829c22c97d',1,'TerrainMapPublisher']]],
   ['loadmapfromimage_43',['loadMapFromImage',['../classTerrainMapPublisher.html#a5d8c63f68d1256f06db6159876ce2100',1,'TerrainMapPublisher']]],
   ['loadmocapmsg_44',['loadMocapMsg',['../classStateEstimator.html#ad16c9f32dd766182c13ed5150ecdccb5',1,'StateEstimator']]],

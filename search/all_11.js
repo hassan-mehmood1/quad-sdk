@@ -7,7 +7,7 @@ var searchData=
   ['ready_4',['READY',['../classRobotDriver.html#a1b842be801aea51ca0b92626473877d3',1,'RobotDriver']]],
   ['ready_5fto_5fpublish_5f_5',['ready_to_publish_',['../classContactStatePublisher.html#a1bd16542dad778d6c16f298fc019c34c',1,'ContactStatePublisher']]],
   ['ready_5fto_5fsit_6',['READY_TO_SIT',['../classRobotDriver.html#a21a196d915f21de0fa1c081ca1337456',1,'RobotDriver']]],
-  ['recv_7',['recv',['../classHardwareInterface.html#a953400a4892d8a8bfe67c84233f9eda7',1,'HardwareInterface::recv()'],['../classSpiritInterface.html#ab4f732b9eb83bf1d532d4b3f65a4529c',1,'SpiritInterface::recv(sensor_msgs::JointState &amp;joint_state_msg, sensor_msgs::Imu &amp;imu_msg, Eigen::VectorXd &amp;user_rx_data)'],['../classSpiritInterface.html#ab15afb8114984e6e8b7a50e11404d994',1,'SpiritInterface::recv(sensor_msgs::JointState &amp;joint_state_msg, sensor_msgs::Imu &amp;imu_msg, Eigen::VectorXd &amp;user_rx_data)']]],
+  ['recv_7',['recv',['../classHardwareInterface.html#a953400a4892d8a8bfe67c84233f9eda7',1,'HardwareInterface::recv()'],['../classSpiritInterface.html#ab4f732b9eb83bf1d532d4b3f65a4529c',1,'SpiritInterface::recv()']]],
   ['ref_5fbody_5fplan_5f_8',['ref_body_plan_',['../classLocalPlanner.html#aa6363b6178edfe652770b16b05224105',1,'LocalPlanner']]],
   ['ref_5fground_5fheight_5f_9',['ref_ground_height_',['../classLocalPlanner.html#a366094784c8063aa272b65d99251829c',1,'LocalPlanner']]],
   ['ref_5fprimitive_5fplan_5f_10',['ref_primitive_plan_',['../classLocalPlanner.html#a4d1b47fc51853d138f0ecb92d15cb0d2',1,'LocalPlanner']]],

@@ -1,7 +1,7 @@
 var searchData=
 [
   ['underbrushinversedynamicscontroller_0',['UnderbrushInverseDynamicsController',['../classUnderbrushInverseDynamicsController.html#a3d5708be558b5cebd91c41c3dff65a1d',1,'UnderbrushInverseDynamicsController']]],
-  ['unloadinterface_1',['unloadInterface',['../classHardwareInterface.html#a5f807b2896484f6dc4c0bae53102c007',1,'HardwareInterface::unloadInterface()'],['../classSpiritInterface.html#acb8c0ec8321cd14a6cdc3371666d1092',1,'SpiritInterface::unloadInterface()'],['../classSpiritInterface.html#afbd4f9f17bf0ca32f8081d26616fc44a',1,'SpiritInterface::unloadInterface()']]],
+  ['unloadinterface_1',['unloadInterface',['../classHardwareInterface.html#a5f807b2896484f6dc4c0bae53102c007',1,'HardwareInterface::unloadInterface()'],['../classSpiritInterface.html#acb8c0ec8321cd14a6cdc3371666d1092',1,'SpiritInterface::unloadInterface()']]],
   ['unwrapyawreference_2',['unwrapYawReference',['../classLocalPlanner.html#ac31f4372e49f80b3ad7400569d05d3ae',1,'LocalPlanner']]],
   ['update_3',['update',['../classBodyForceEstimator.html#ad58160e251444612477211477d0f8a02',1,'BodyForceEstimator']]],
   ['updateadaptivecomplexityschedule_4',['updateAdaptiveComplexitySchedule',['../classNMPCController.html#aa9e6d32416ab5bf01bc4c1d68659312b',1,'NMPCController']]],
