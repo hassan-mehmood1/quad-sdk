@@ -1,4 +1,7 @@
 #include "robot_driver/robot_driver.h"
+// New comments to test David's stuff
+// 10/06/2023 @ 15:25
+
 
 RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
   nh_ = nh;
@@ -10,9 +13,9 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
       robot_state_topic, trajectory_state_topic, local_plan_topic,
       leg_command_array_topic, control_mode_topic, remote_heartbeat_topic,
       robot_heartbeat_topic, single_joint_cmd_topic, mocap_topic,
-      control_restart_flag_topic;//, lowstate_topic;
+      control_restart_flag_topic, body_force_estimate_topic;
   quad_utils::loadROSParamDefault(nh_, "robot_type", robot_name,
-                                  std::string("spirit"));
+                                  std::string("jamal"));
   quad_utils::loadROSParam(nh_, "topics/state/imu", imu_topic);
   quad_utils::loadROSParam(nh_, "topics/state/joints", joint_state_topic);
   quad_utils::loadROSParam(nh_, "topics/local_plan", local_plan_topic);
@@ -23,6 +26,8 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
                            remote_heartbeat_topic);
   quad_utils::loadROSParam(nh_, "topics/heartbeat/robot",
                            robot_heartbeat_topic);
+  quad_utils::loadROSParam(nh_, "topics/body_force/joint_torques",
+                           body_force_estimate_topic);
   quad_utils::loadROSParam(nh_, "topics/control/grfs", grf_topic);
   quad_utils::loadROSParam(nh_, "topics/control/joint_command",
                            leg_command_array_topic);
@@ -31,16 +36,14 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
                            single_joint_cmd_topic);
   quad_utils::loadROSParam(nh_, "topics/control/restart_flag",
                            control_restart_flag_topic);
-  quad_utils::loadROSParam(nh_, "topics/mocap", mocap_topic);
-  // quad_utils::loadROSParam(nh_, "/low_state", lowstate_topic);
-
+  quad_utils::loadROSParam(nh_, "/topics/mocap", mocap_topic);
   quad_utils::loadROSParamDefault(nh_, "robot_driver/is_hardware", is_hardware_,
                                   true);
   quad_utils::loadROSParamDefault(nh_, "robot_driver/controller",
                                   controller_id_,
                                   std::string("inverse_dynamics"));
   quad_utils::loadROSParamDefault(nh_, "robot_driver/estimator", estimator_id_,
-                                  std::string("unitree_estimator"));
+                                  std::string("comp_filter"));
   quad_utils::loadROSParam(nh_, "/robot_driver/update_rate", update_rate_);
   quad_utils::loadROSParam(nh_, "/robot_driver/publish_rate", publish_rate_);
   quad_utils::loadROSParam(nh_, "/robot_driver/mocap_rate", mocap_rate_);
@@ -79,6 +82,9 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
   single_joint_cmd_sub_ =
       nh_.subscribe(single_joint_cmd_topic, 1,
                     &RobotDriver::singleJointCommandCallback, this);
+  // body_force_estimate_sub_ =
+  //     nh_.subscribe(body_force_estimate_topic, 1,
+  //                   &RobotDriver::bodyForceEstimateCallback, this);
   remote_heartbeat_sub_ = nh_.subscribe(
       remote_heartbeat_topic, 1, &RobotDriver::remoteHeartbeatCallback, this);
   control_restart_flag_sub_ =
@@ -92,13 +98,19 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
   trajectry_robot_state_pub_ =
       nh_.advertise<quad_msgs::RobotState>(trajectory_state_topic, 1);
 
+
+  imu_sub_ = nh_.subscribe(
+      "/imu/data", 1, &RobotDriver::imuCallback, this);
+
+  motor_sub_ = nh_.subscribe(
+    "/motor_states", 1, &RobotDriver::motorCallback, this);
+
+
   // Set up pubs and subs dependent on robot layer
   if (is_hardware_) {
     ROS_INFO("Loading hardware robot driver");
     mocap_sub_ = nh_.subscribe(mocap_topic, 1000, &RobotDriver::mocapCallback,
                                this, ros::TransportHints().tcpNoDelay(true));
-    // unitree_state_sub_ = nh_.subscribe("/low_state", 10, &RobotDriver::unitreeStateCallback,
-    //                            this, ros::TransportHints().tcpNoDelay(true));                           
     robot_state_pub_ =
         nh_.advertise<quad_msgs::RobotState>(robot_state_topic, 1);
     imu_pub_ = nh_.advertise<sensor_msgs::Imu>(imu_topic, 1);
@@ -116,21 +128,22 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
 
   // Initialize hardware interface
   if (is_hardware_) {
-    // ROS_INFO("Robot name is %s", robot_name);
-    // if (robot_name == "spirit") {
-    //   hardware_interface_ = std::make_shared<SpiritInterface>();
-    // } else {
-    //   if (robot_name == "go1") {
-
-    //   } else {
-    //     ROS_ERROR_STREAM("Invalid robot name " << robot_name
-    //                                     << ", returning nullptr");
-    //     hardware_interface_ = nullptr;
-    //   }
+    // if (robot_name == "jamal") {
+    //   hardware_interface_ = std::make_shared<JamalInterface>();
+    // } 
+    // // if (robot_name == "spirit" || robot_name == "spirit_rotors") {
+    // //   hardware_interface_ = std::make_shared<SpiritInterface>();
+    // // } 
+    // // else if(robot_name == "jamal") {
+    // //   hardware_interface_ = std::make_shared<JamalInterface>();
+    // // } 
+    // else {
+    //   ROS_ERROR_STREAM("Invalid robot name " << robot_name
+    //                                          << ", returning nullptr");
+    //   hardware_interface_ = nullptr;
     // }
-    hardware_interface_ = std::make_shared<Go1Interface>(nh);
-    ROS_INFO("Go1 interface has been loaded");
-
+    // hardware_interface_ = std::make_shared<JamalInterface>();
+    ROS_INFO("Jamal interface has been loaded");
   }
 
   // Initialize leg controller object
@@ -154,18 +167,15 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
 
   // Initialize state estimator object
   initStateEstimator();
-  ROS_INFO("Initialization completed");
-
 }
 
 void RobotDriver::initStateEstimator() {
   if (estimator_id_ == "comp_filter") {
+    ROS_INFO_STREAM("Comp Filter");
     state_estimator_ = std::make_shared<CompFilterEstimator>();
   } else if (estimator_id_ == "ekf_filter") {
-    state_estimator_ = std::make_shared<EKFEstimator>();
-  } else if (estimator_id_ == "unitree_estimator")
-  {
-    state_estimator_ = std::make_shared<UnitreeEstimator>();
+    // state_estimator_ = std::make_shared<EKFEstimator>();
+    state_estimator_ = std::make_shared<RealsenseEstimator>();
   } else {
     ROS_ERROR_STREAM("Invalid estimator id " << estimator_id_
                                              << ", returning nullptr");
@@ -230,8 +240,6 @@ void RobotDriver::controlModeCallback(const std_msgs::UInt8::ConstPtr &msg) {
 
 void RobotDriver::singleJointCommandCallback(
     const geometry_msgs::Vector3::ConstPtr &msg) {
-      //TODO 
-      return;
   if (JointController *c =
           dynamic_cast<JointController *>(leg_controller_.get())) {
     c->updateSingleJointCommand(msg);
@@ -245,12 +253,44 @@ void RobotDriver::controlRestartFlagCallback(
 
 void RobotDriver::localPlanCallback(const quad_msgs::RobotPlan::ConstPtr &msg) {
   last_local_plan_msg_ = msg;
-  return;
+
   ros::Time t_now = ros::Time::now();
   double round_trip_time_diff =
       (t_now - last_local_plan_msg_->state_timestamp).toSec();
 
   leg_controller_->updateLocalPlanMsg(last_local_plan_msg_, t_now);
+}
+
+void RobotDriver::imuCallback(
+    const sensor_msgs::Imu::ConstPtr &msg) {
+  // Store the IMU data
+  last_imu_msg_ = *msg;
+  ROS_INFO("IMU Data:");
+  ROS_INFO("  Orientation -> x: %.4f, y: %.4f, z: %.4f, w: %.4f",
+          last_imu_msg_.orientation.x,
+          last_imu_msg_.orientation.y,
+          last_imu_msg_.orientation.z,
+          last_imu_msg_.orientation.w);
+
+  ROS_INFO("  Angular Velocity -> x: %.4f, y: %.4f, z: %.4f",
+          last_imu_msg_.angular_velocity.x,
+          last_imu_msg_.angular_velocity.y,
+          last_imu_msg_.angular_velocity.z);
+
+  ROS_INFO("  Linear Acceleration -> x: %.4f, y: %.4f, z: %.4f",
+          last_imu_msg_.linear_acceleration.x,
+          last_imu_msg_.linear_acceleration.y,
+          last_imu_msg_.linear_acceleration.z);
+  //std::cout << "Test de l'IMU :" << '\n';
+  //std::cout << "  Orientation en x = " << last_imu_msg_.orientation.x << '\n';
+}
+
+void RobotDriver::motorCallback(
+    const sensor_msgs::JointState::ConstPtr &msg) {
+  // Store the IMU data
+  last_joint_state_msg_ = *msg;
+  //std::cout << "Test de l'IMU :" << '\n';
+  //std::cout << "  Orientation en x = " << last_imu_msg_.orientation.x << '\n';
 }
 
 void RobotDriver::mocapCallback(
@@ -259,26 +299,29 @@ void RobotDriver::mocapCallback(
   Eigen::Vector3d pos;
   quad_utils::pointMsgToEigen(msg->pose.position, pos);
 
-  // Record time diff between messages
-  ros::Time t_now = ros::Time::now();
-  double t_diff_mocap_msg =
-      (msg->header.stamp - last_mocap_msg_->header.stamp).toSec();
-  double t_mocap_ros_latency = (t_now - msg->header.stamp).toSec();
-  last_mocap_time_ = t_now;
+  if (last_mocap_msg_ != NULL) {
+    // Record time diff between messages
+    ros::Time t_now = ros::Time::now();
+    double t_diff_mocap_msg =
+        (msg->header.stamp - last_mocap_msg_->header.stamp).toSec();
 
-  // If time diff between messages < mocap dropout threshould then
-  // apply filter
-  if (abs(t_diff_mocap_msg - 1.0 / mocap_rate_) < mocap_dropout_threshold_) {
-    if (CompFilterEstimator *c =
-            dynamic_cast<CompFilterEstimator *>(state_estimator_.get())) {
-      c->mocapCallBackHelper(msg, pos);
+    // If time diff between messages < mocap dropout threshould then
+    // apply filter
+    if (abs(t_diff_mocap_msg - 1.0 / mocap_rate_) < mocap_dropout_threshold_) {
+      if (CompFilterEstimator *c =
+              dynamic_cast<CompFilterEstimator *>(state_estimator_.get())) {
+        c->mocapCallBackHelper(msg, pos);
+      }
+    } else {
+      ROS_WARN_THROTTLE(
+          0.1,
+          "Mocap time diff exceeds max dropout threshold, hold the last value");
     }
   } else {
     ROS_WARN_THROTTLE(
         0.1,
         "Mocap time diff exceeds max dropout threshold, hold the last value");
   }
-
   // Update our cached mocap position
   last_mocap_msg_ = msg;
 }
@@ -287,6 +330,16 @@ void RobotDriver::robotStateCallback(
     const quad_msgs::RobotState::ConstPtr &msg) {
   last_robot_state_msg_ = *msg;
 }
+
+// void RobotDriver::bodyForceEstimateCallback(
+//     const quad_msgs::BodyForceEstimate::ConstPtr &msg) {
+//   if (controller_id_ == "underbrush") {
+//     UnderbrushInverseDynamicsController *c =
+//         reinterpret_cast<UnderbrushInverseDynamicsController *>(
+//             leg_controller_.get());
+//     c->updateBodyForceEstimate(msg);
+//   }
+// }
 
 void RobotDriver::remoteHeartbeatCallback(
     const std_msgs::Header::ConstPtr &msg) {
@@ -328,11 +381,17 @@ void RobotDriver::checkMessagesForSafety() {
 bool RobotDriver::updateState() {
   if (is_hardware_) {
     // grab data from hardware
-    bool fully_populated = true;
-    
-    hardware_interface_->recv(last_joint_state_msg_, last_imu_msg_, user_rx_data_);
+    ////////////////////////////////////////////////////////////////////
+    // bool fully_populated = hardware_interface_->recv(
+    //     last_joint_state_msg_, last_imu_msg_, user_rx_data_);
+
+    ros::Time t_now = ros::Time::now();
+    ros::Duration period = ros::Duration(1.0 / update_rate_);  // control loop period
+    // bool fully_populated = hardware_interface_->recv(
+    //     last_joint_state_msg_, last_imu_msg_, t_now, period);
 
     // load robot sensor message to state estimator class
+    bool fully_populated = true;
     if (fully_populated) {
       state_estimator_->loadSensorMsg(last_imu_msg_, last_joint_state_msg_);
     } else {
@@ -355,7 +414,6 @@ bool RobotDriver::updateState() {
     return true;
   }
 }
-
 
 void RobotDriver::publishState() {
   if (is_hardware_) {
@@ -551,6 +609,21 @@ void RobotDriver::publishControl(bool is_valid) {
   // Stamp and send the message
   // if ((ros::Time::now() - leg_command_array_msg_.header.stamp).toSec()
   // >= 1.0/publish_rate_) {
+  // Print joint commands for debugging
+  for (int i = 0; i < leg_command_array_msg_.leg_commands.size(); ++i) {
+    ROS_INFO_STREAM("Leg " << i << " Commands:");
+    for (int j = 0; j < leg_command_array_msg_.leg_commands[i].motor_commands.size(); ++j) {
+      const auto &cmd = leg_command_array_msg_.leg_commands[i].motor_commands[j];
+      ROS_INFO_STREAM("  Motor " << j
+                      << " | pos_setpoint: " << cmd.pos_setpoint
+                      << " | vel_setpoint: " << cmd.vel_setpoint
+                      << " | torque_ff: " << cmd.torque_ff
+                      << " | kp: " << cmd.kp
+                      << " | kd: " << cmd.kd
+                      << " | effort: " << cmd.effort);
+    }
+  }
+
   leg_command_array_msg_.header.stamp = ros::Time::now();
   leg_command_array_pub_.publish(leg_command_array_msg_);
   grf_array_msg_.header.stamp = leg_command_array_msg_.header.stamp;
@@ -559,9 +632,15 @@ void RobotDriver::publishControl(bool is_valid) {
 
   // Send command to the robot
   if (is_hardware_ && is_valid) {
+    ////////////////////////////////////////////////////////////////////////
+    // ros::Time t_start = ros::Time::now();
+    // hardware_interface_->send(leg_command_array_msg_, user_tx_data_);
+    // ros::Time t_end = ros::Time::now();
     ros::Time t_start = ros::Time::now();
-    hardware_interface_->send(leg_command_array_msg_, user_tx_data_);
+    ros::Duration period = ros::Duration(1.0 / update_rate_);
+    // hardware_interface_->send(leg_command_array_msg_, t_start, period);
     ros::Time t_end = ros::Time::now();
+
 
     ROS_INFO_THROTTLE(1.0, "t_diff_mb_send = %6.4f", (t_end - t_start).toSec());
   }
@@ -581,9 +660,9 @@ void RobotDriver::spin() {
   ros::Rate r(update_rate_);
 
   // Start the mblink connection
-  if (is_hardware_) {
-    hardware_interface_->loadInterface(argc_, argv_);
-  }
+  // if (is_hardware_) {
+  //   hardware_interface_->loadInterface(argc_, argv_);
+  // }
 
   while (ros::ok()) {
     // Collect new messages on subscriber topics and publish heartbeat
@@ -605,7 +684,7 @@ void RobotDriver::spin() {
   }
 
   // Close the mblink connection
-  if (is_hardware_) {
-    hardware_interface_->unloadInterface();
-  }
+  // if (is_hardware_) {
+  //   hardware_interface_->unloadInterface();
+  // }
 }

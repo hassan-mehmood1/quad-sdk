@@ -5,7 +5,7 @@
     <arg name="logging" default="false" />
     <arg name="controller" default="inverse_dynamics" />
     <arg name="is_hardware" default="true" />
-    <arg name="estimator" default="unitree_estimator" />
+    <arg name="estimator" default="comp_filter" />
     <arg name="live_plot" default="false" />
     <arg name="dash" default="false" />
     <arg name="map_input_type" default="mesh" />

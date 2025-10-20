@@ -12,6 +12,8 @@ topics:
     toe_forces: body_force/toe_forces
   trajectory: robot_plan
   state: # These should not change for the remapping to work in some launch files
+    # joints: /motor_states
+    # imu: /imu/data_raw
     joints: state/joints
     imu: state/imu
     ground_truth: state/ground_truth
@@ -27,6 +29,7 @@ topics:
     restart_flag: control/restart_flag
     leg_override: control/leg_override
     single_joint_command: control/single_joint_command
+    joint_command_out: "/leg_commands_out"
   cmd_vel: cmd_vel
   heartbeat:
     robot: heartbeat/robot

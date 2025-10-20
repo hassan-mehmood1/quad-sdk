@@ -13,7 +13,7 @@ LocalPlanner::LocalPlanner(ros::NodeHandle nh)
 
   // Load system parameters from launch file (not in config file)
   quad_utils::loadROSParamDefault(nh_, "robot_type", robot_name_,
-                                  std::string("spirit"));
+                                  std::string("jamal"));
   quad_utils::loadROSParam(nh_, "/topics/terrain_map", terrain_map_topic);
   quad_utils::loadROSParam(nh_, "topics/global_plan", body_plan_topic);
   quad_utils::loadROSParam(nh_, "topics/state/ground_truth", robot_state_topic);
@@ -115,13 +115,15 @@ void LocalPlanner::initLocalBodyPlanner() {
     type = SPIRIT;
   } else if (robot_name_ == "a1") {
     type = A1;
-  } else if (robot_name_ == "go1") {
+  } else if (robot_name_ == "jamal") {
+    type = JAMAL;
+  }  else if (robot_name_ == "go1") {
     type = GO1;
     std::cout << "robot_name is GO1 with type: " << type << std::endl;
   } else {
     // Временная костыль
-    type = GO1;
-    std::cout << "robot_name is GO1 with type: " << type << std::endl;
+    type = JAMAL;
+    // std::cout << "robot_name is GO1 with type: " << type << std::endl;
     ROS_WARN("WRONG ROBOT TYPE");
   }
   local_body_planner_nonlinear_ = std::make_shared<NMPCController>(nh_, type);

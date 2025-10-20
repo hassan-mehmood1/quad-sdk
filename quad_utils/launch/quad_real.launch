@@ -1,5 +1,5 @@
 <launch>
-    <arg name="robot_type" default="go1" />
+    <arg name="robot_type" default="jamal" />
     <arg name="multiple_robots" default="false" />
     <arg name="gui" default="false" />
     <arg name="paused" default="false" />
@@ -36,17 +36,32 @@
         <param name="robot_type" value="$(arg robot_type)" /> 
         <param name="controller" value="$(arg controller)" />
         <param name="is_hardware" value="$(arg is_hardware)" />
+        <param name="topics/state/imu"    value="/state/imu"/>
+        <param name="topics/state/joints" value="/state/joints"/>
+        <!-- Optional: where actuator bus commands go -->
+        <param name="topics/control/joint_command_out" value="/leg_commands_out"/>
+
     </node>
 
     <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher">
-      <param name="publish_frequency" type="double" value="1000.0"/>-->
+      <param name="publish_frequency" type="double" value="1000.0"/>
       <remap from="joint_states" to="/state/joints" />
     </node>
   <!-- Load the visualization tools  -->
     <node pkg="rviz" type="rviz" name="rviz" respawn="false" output="screen"
-      args="-d $(find go1_description)/launch/check_joint.rviz"/>
+      args="-d $(find jamal_description)/launch/check_joint.rviz"/>
+
     <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find quad_utils)/rviz/quad_viewer.rviz"/>
     <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/> -->
+
+        <!-- Start the heartbeat node -->
+    <node name="remote_heartbeat" pkg="quad_utils" type="remote_heartbeat_node" output="screen" />
     
+    <!-- <include file="$(find quad_utils)/launch/quad_visualization.launch">
+      <arg name="robot_type" value="$(arg robot_type)" />
+      <arg name="live_plot" value="$(arg live_plot)" />
+      <arg name="dash" value="$(arg dash)" />
+    </include> -->
+    <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/>
 
 </launch>

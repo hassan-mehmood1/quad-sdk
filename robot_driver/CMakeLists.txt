@@ -78,10 +78,13 @@ add_library(robot_driver
   src/estimators/state_estimator.cpp
   src/estimators/comp_filter_estimator.cpp
   src/estimators/ekf_estimator.cpp
+  src/estimators/realsense_estimator.cpp
   src/estimators/unitree_estimator.cpp
   src/hardware_interfaces/hardware_interface.cpp
   src/hardware_interfaces/spirit_interface.cpp
   src/hardware_interfaces/go1_interface.cpp
+  src/hardware_interfaces/jamal_interface.cpp
+  src/hardware_interfaces/hardware_interface.cpp
 )
 add_dependencies(robot_driver ${robot_driver_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 

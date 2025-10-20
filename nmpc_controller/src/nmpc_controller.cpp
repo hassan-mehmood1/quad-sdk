@@ -15,11 +15,15 @@ NMPCController::NMPCController(ros::NodeHandle &nh, int robot_id) {
       default_system = A1;
       break;
     case 2:
+      robot_ns_ = "jamal";
+      default_system = JAMAL;
+      break;
+    case 3:
       robot_ns_ = "go1";
       default_system = GO1;
     default:
-      robot_ns_ = "go1";
-      default_system = GO1;
+      robot_ns_ = "jamal";
+      default_system = JAMAL;
       break;
   }
 

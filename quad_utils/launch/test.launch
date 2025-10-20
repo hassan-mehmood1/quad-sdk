@@ -1,11 +1,11 @@
 <launch>
 
-    <arg name="robot_type" default="go1"/>
+    <arg name="robot_type" default="jamal"/>
     <arg name="mocap" default="false" />
     <arg name="logging" default="false" />
     <arg name="controller" default="inverse_dynamics" />
     <arg name="is_hardware" default="true" />
-    <arg name="estimator" default="unitree_estimator" />
+    <arg name="estimator" default="ekf_filter" />
     <arg name="live_plot" default="false" />
     <arg name="dash" default="false" />
     <arg name="map_input_type" default="mesh" />
@@ -52,4 +52,4 @@
     </node>
     <!-- Start the heartbeat node -->
     <node name="remote_heartbeat" pkg="quad_utils" type="remote_heartbeat_node" output="screen" />
-<launch>
+</launch>

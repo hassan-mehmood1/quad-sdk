@@ -15,6 +15,8 @@
 #include <ros/ros.h>
 #include <std_msgs/Bool.h>
 #include <std_msgs/UInt8.h>
+#include <sensor_msgs/Imu.h>
+#include <sensor_msgs/JointState.h>
 
 #include <cmath>
 #include <eigen3/Eigen/Eigen>
@@ -25,11 +27,10 @@
 #include "robot_driver/controllers/leg_controller.h"
 #include "robot_driver/estimators/comp_filter_estimator.h"
 #include "robot_driver/estimators/ekf_estimator.h"
+#include "robot_driver/estimators/realsense_estimator.h"
 #include "robot_driver/estimators/state_estimator.h"
-#include "robot_driver/estimators/unitree_estimator.h"
 #include "robot_driver/hardware_interfaces/hardware_interface.h"
-#include "robot_driver/hardware_interfaces/spirit_interface.h"
-#include "robot_driver/hardware_interfaces/go1_interface.h"
+// #include "robot_driver/hardware_interfaces/ylo2_interface.h"
 #include "robot_driver/robot_driver_utils.h"
 
 #define MATH_PI 3.141592
@@ -57,19 +58,6 @@ class RobotDriver {
   void spin();
 
  private:
-     std::map<int, int> quad2uni{ // Number motor
-        {0, FL_1},
-        {1, FL_2},
-        {2, RL_1},
-        {3, RL_2},
-        {4, FR_1},
-        {5, FR_2},
-        {6, RR_1},
-        {7, RR_2},
-        {8, FL_0},
-        {9, RL_0},
-        {10, FR_0},
-        {11, RR_0}};
   /**
    * @brief Initializes leg controller object
    */
@@ -88,6 +76,12 @@ class RobotDriver {
   /**
    * @brief Verifies and updates new control mode
    * @param[in] msg New control mode
+   */
+   void grfCallback(const quad_msgs::GRFArray::ConstPtr& msg);
+
+  /**
+   * @brief execute EKF Update step, return state estimate
+   * @return state estimate of custom type RobotState
    */
   void controlModeCallback(const std_msgs::UInt8::ConstPtr& msg);
 
@@ -133,6 +127,13 @@ class RobotDriver {
   void remoteHeartbeatCallback(const std_msgs::Header::ConstPtr& msg);
 
   /**
+   * @brief Callback to handle new IMU messages
+   * @param[in] msg Remote heartbeat message
+   */
+  void imuCallback(const sensor_msgs::Imu::ConstPtr& msg);
+  void motorCallback(const sensor_msgs::JointState::ConstPtr& msg);
+
+  /**
    * @brief Check to make sure required messages are fresh
    */
   void checkMessagesForSafety();
@@ -164,10 +165,6 @@ class RobotDriver {
    */
   void publishHeartbeat();
 
-  ros::Subscriber unitree_state_sub_;
-
-  void unitreeStateCallback(const unitree_legged_msgs::LowState::ConstPtr &msg);
-
   /// Subscriber for control mode
   ros::Subscriber control_mode_sub_;
 
@@ -195,8 +192,15 @@ class RobotDriver {
   /// ROS subscriber for remote heartbeat
   ros::Subscriber remote_heartbeat_sub_;
 
+  /// Subscriber for the IMU data
+  ros::Subscriber imu_sub_;
+  ros::Subscriber motor_sub_;
+  
   /// ROS subscriber for single joint command
   ros::Subscriber single_joint_cmd_sub_;
+
+//   /// ROS subscriber for desired GRF
+//   ros::Subscriber grf_sub_;
 
   /// ROS publisher for robot heartbeat
   ros::Publisher robot_heartbeat_pub_;
@@ -213,6 +217,9 @@ class RobotDriver {
   /// ROS publisher for joint data
   ros::Publisher joint_state_pub_;
 
+  /// Publisher for state estimate messages
+  ros::Publisher state_estimate_pub_;
+
   /// Nodehandle to pub to and sub from
   ros::NodeHandle nh_;
 
@@ -224,6 +231,9 @@ class RobotDriver {
 
   /// Estimator type
   std::string estimator_id_;
+
+  /// Ground Truth Source
+  std::string ground_truth_;
 
   /// Update rate for computing new controls;
   double update_rate_;
@@ -267,8 +277,14 @@ class RobotDriver {
   /// Most recent local plan
   quad_msgs::RobotPlan::ConstPtr last_local_plan_msg_;
 
-  /// Most recent state estimate
+  /// Ground Truth Robot State from Simulation
   quad_msgs::RobotState last_robot_state_msg_;
+
+  /// Robot State Estimate Used in Control 
+  quad_msgs::RobotState state_estimate_;
+
+  /// EKF State Estimate Output
+  quad_msgs::RobotState estimated_state_;
 
   /// Most recent local plan
   quad_msgs::GRFArray::ConstPtr last_grf_array_msg_;
@@ -357,6 +373,9 @@ class RobotDriver {
   /// State Estimator template class
   std::shared_ptr<StateEstimator> state_estimator_;
 
+  /// State Estimator template class
+  std::shared_ptr<StateEstimator> ekf_estimator_;
+
   /// Mblink converter object
   std::shared_ptr<HardwareInterface> hardware_interface_;
 
@@ -402,6 +421,8 @@ class RobotDriver {
 
   /// Required for some hardware interfaces
   int argc_;
+
+  bool initialized;
 
   /// Required for some hardware interfaces
   char** argv_;

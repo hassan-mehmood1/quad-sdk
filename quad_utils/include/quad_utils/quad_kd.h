@@ -419,13 +419,13 @@ class QuadKD {
   std::vector<int> leg_idx_list_;
 
   /// Abad max joint torque
-  const double abad_tau_max_ = 21;
+  const double abad_tau_max_ = 48;
 
   /// Hip max joint torque
-  const double hip_tau_max_ = 21;
+  const double hip_tau_max_ = 48;
 
   /// Knee max joint torque
-  const double knee_tau_max_ = 32;
+  const double knee_tau_max_ = 48;
 
   /// Vector of max torques
   const Eigen::VectorXd tau_max_ =
@@ -435,13 +435,13 @@ class QuadKD {
           .finished();
 
   /// Abad max joint velocity
-  const double abad_vel_max_ = 37.7;
+  const double abad_vel_max_ = 8;
 
   /// Hip max joint velocity
-  const double hip_vel_max_ = 37.7;
+  const double hip_vel_max_ = 8;
 
   /// Knee max joint velocity
-  const double knee_vel_max_ = 25.1;
+  const double knee_vel_max_ = 8;
 
   /// Vector of max velocities
   const Eigen::VectorXd vel_max_ =
