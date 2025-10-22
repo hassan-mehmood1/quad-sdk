@@ -1,7 +1,7 @@
 <launch>
     <arg name="reference"  default="twist" />
     <arg name="logging"         default="false" />
-    <arg name="twist_input"     default="none" />
+    <arg name="twist_input"     default="keyboard" />
     <arg name="namespace"       default="robot_1" />
     <arg name="robot_type" default="jamal"/>
     <arg name="leaping" default="true" />
