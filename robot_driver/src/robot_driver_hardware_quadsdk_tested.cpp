@@ -99,18 +99,16 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
       nh_.advertise<quad_msgs::RobotState>(trajectory_state_topic, 1);
 
 
+  imu_sub_ = nh_.subscribe(
+      "/imu/data", 1, &RobotDriver::imuCallback, this);
 
+  motor_sub_ = nh_.subscribe(
+    "/motor_states", 1, &RobotDriver::motorCallback, this);
 
 
   // Set up pubs and subs dependent on robot layer
   if (is_hardware_) {
     ROS_INFO("Loading hardware robot driver");
-    imu_sub_ = nh_.subscribe(
-        "/imu/data", 1, &RobotDriver::imuCallback, this);
-
-    motor_sub_ = nh_.subscribe(
-      "/motor_states", 1, &RobotDriver::motorCallback, this);
-
     mocap_sub_ = nh_.subscribe(mocap_topic, 1000, &RobotDriver::mocapCallback,
                                this, ros::TransportHints().tcpNoDelay(true));
     robot_state_pub_ =
@@ -176,9 +174,8 @@ void RobotDriver::initStateEstimator() {
     ROS_INFO_STREAM("Comp Filter");
     state_estimator_ = std::make_shared<CompFilterEstimator>();
   } else if (estimator_id_ == "ekf_filter") {
-    state_estimator_ = std::make_shared<EKFEstimator>();
-    ///////for hardware
-    // state_estimator_ = std::make_shared<RealsenseEstimator>();
+    // state_estimator_ = std::make_shared<EKFEstimator>();
+    state_estimator_ = std::make_shared<RealsenseEstimator>();
   } else {
     ROS_ERROR_STREAM("Invalid estimator id " << estimator_id_
                                              << ", returning nullptr");

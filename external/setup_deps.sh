@@ -27,6 +27,7 @@ else
 fi
 cd coinbrew
 ./coinbrew build Ipopt --latest-release --tests none --prefix=/usr/local
+# ./coinbrew build Ipopt --tests none --prefix=/usr/local
 cd ../..
 
 # Setup and build for rbdl

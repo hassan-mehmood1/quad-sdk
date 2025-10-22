@@ -98,19 +98,9 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
   trajectry_robot_state_pub_ =
       nh_.advertise<quad_msgs::RobotState>(trajectory_state_topic, 1);
 
-
-
-
-
   // Set up pubs and subs dependent on robot layer
   if (is_hardware_) {
     ROS_INFO("Loading hardware robot driver");
-    imu_sub_ = nh_.subscribe(
-        "/imu/data", 1, &RobotDriver::imuCallback, this);
-
-    motor_sub_ = nh_.subscribe(
-      "/motor_states", 1, &RobotDriver::motorCallback, this);
-
     mocap_sub_ = nh_.subscribe(mocap_topic, 1000, &RobotDriver::mocapCallback,
                                this, ros::TransportHints().tcpNoDelay(true));
     robot_state_pub_ =
@@ -177,8 +167,6 @@ void RobotDriver::initStateEstimator() {
     state_estimator_ = std::make_shared<CompFilterEstimator>();
   } else if (estimator_id_ == "ekf_filter") {
     state_estimator_ = std::make_shared<EKFEstimator>();
-    ///////for hardware
-    // state_estimator_ = std::make_shared<RealsenseEstimator>();
   } else {
     ROS_ERROR_STREAM("Invalid estimator id " << estimator_id_
                                              << ", returning nullptr");
@@ -197,7 +185,29 @@ void RobotDriver::initLegController() {
     leg_controller_ = std::make_shared<GrfPidController>();
   } else if (controller_id_ == "joint") {
     leg_controller_ = std::make_shared<JointController>();
-  } else {
+  }
+  //  else if (controller_id_ == "underbrush") {
+  //   leg_controller_ = std::make_shared<UnderbrushInverseDynamicsController>();
+  //   double retract_vel, tau_push, tau_contact_start, tau_contact_end,
+  //       min_switch, t_down, t_up;
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/retract_vel", retract_vel);
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/tau_push", tau_push);
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/tau_contact_start",
+  //                            tau_contact_start);
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/tau_contact_end",
+  //                            tau_contact_end);
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/min_switch", min_switch);
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/t_down", t_down);
+  //   quad_utils::loadROSParam(nh_, "/underbrush_swing/t_up", t_up);
+  //   UnderbrushInverseDynamicsController *c =
+  //       dynamic_cast<UnderbrushInverseDynamicsController *>(
+  //           leg_controller_.get());
+  //   c->setUnderbrushParams(retract_vel, tau_push, tau_contact_start,
+  //                          tau_contact_end, min_switch, t_down, t_up);
+  // } else if (controller_id_ == "inertia_estimation") {
+  //   leg_controller_ = std::make_shared<InertiaEstimationController>();
+  // }
+   else {
     ROS_ERROR_STREAM("Invalid controller id " << controller_id_
                                               << ", returning nullptr");
     leg_controller_ = nullptr;
@@ -262,38 +272,6 @@ void RobotDriver::localPlanCallback(const quad_msgs::RobotPlan::ConstPtr &msg) {
       (t_now - last_local_plan_msg_->state_timestamp).toSec();
 
   leg_controller_->updateLocalPlanMsg(last_local_plan_msg_, t_now);
-}
-
-void RobotDriver::imuCallback(
-    const sensor_msgs::Imu::ConstPtr &msg) {
-  // Store the IMU data
-  last_imu_msg_ = *msg;
-  ROS_INFO("IMU Data:");
-  ROS_INFO("  Orientation -> x: %.4f, y: %.4f, z: %.4f, w: %.4f",
-          last_imu_msg_.orientation.x,
-          last_imu_msg_.orientation.y,
-          last_imu_msg_.orientation.z,
-          last_imu_msg_.orientation.w);
-
-  ROS_INFO("  Angular Velocity -> x: %.4f, y: %.4f, z: %.4f",
-          last_imu_msg_.angular_velocity.x,
-          last_imu_msg_.angular_velocity.y,
-          last_imu_msg_.angular_velocity.z);
-
-  ROS_INFO("  Linear Acceleration -> x: %.4f, y: %.4f, z: %.4f",
-          last_imu_msg_.linear_acceleration.x,
-          last_imu_msg_.linear_acceleration.y,
-          last_imu_msg_.linear_acceleration.z);
-  //std::cout << "Test de l'IMU :" << '\n';
-  //std::cout << "  Orientation en x = " << last_imu_msg_.orientation.x << '\n';
-}
-
-void RobotDriver::motorCallback(
-    const sensor_msgs::JointState::ConstPtr &msg) {
-  // Store the IMU data
-  last_joint_state_msg_ = *msg;
-  //std::cout << "Test de l'IMU :" << '\n';
-  //std::cout << "  Orientation en x = " << last_imu_msg_.orientation.x << '\n';
 }
 
 void RobotDriver::mocapCallback(
@@ -392,9 +370,8 @@ bool RobotDriver::updateState() {
     ros::Duration period = ros::Duration(1.0 / update_rate_);  // control loop period
     // bool fully_populated = hardware_interface_->recv(
     //     last_joint_state_msg_, last_imu_msg_, t_now, period);
-
-    // load robot sensor message to state estimator class
     bool fully_populated = true;
+    // load robot sensor message to state estimator class
     if (fully_populated) {
       state_estimator_->loadSensorMsg(last_imu_msg_, last_joint_state_msg_);
     } else {
@@ -612,21 +589,6 @@ void RobotDriver::publishControl(bool is_valid) {
   // Stamp and send the message
   // if ((ros::Time::now() - leg_command_array_msg_.header.stamp).toSec()
   // >= 1.0/publish_rate_) {
-  // Print joint commands for debugging
-  for (int i = 0; i < leg_command_array_msg_.leg_commands.size(); ++i) {
-    ROS_INFO_STREAM("Leg " << i << " Commands:");
-    for (int j = 0; j < leg_command_array_msg_.leg_commands[i].motor_commands.size(); ++j) {
-      const auto &cmd = leg_command_array_msg_.leg_commands[i].motor_commands[j];
-      ROS_INFO_STREAM("  Motor " << j
-                      << " | pos_setpoint: " << cmd.pos_setpoint
-                      << " | vel_setpoint: " << cmd.vel_setpoint
-                      << " | torque_ff: " << cmd.torque_ff
-                      << " | kp: " << cmd.kp
-                      << " | kd: " << cmd.kd
-                      << " | effort: " << cmd.effort);
-    }
-  }
-
   leg_command_array_msg_.header.stamp = ros::Time::now();
   leg_command_array_pub_.publish(leg_command_array_msg_);
   grf_array_msg_.header.stamp = leg_command_array_msg_.header.stamp;

@@ -1,6 +1,6 @@
 <launch>
     <arg name="robot_type" default="jamal"/>
-    <arg name="namespace" default="jamal"/>
+    <arg name="namespace" default="robot_1"/>
     
     <include file="$(find quad_utils)/launch/load_global_params.launch">
         <arg name="robot_type" value="$(arg robot_type)"/>
@@ -9,8 +9,8 @@
     <arg name="mocap" default="false" />
     <arg name="logging" default="false" />
     <arg name="controller" default="inverse_dynamics" />
-    <arg name="is_hardware" default="true" />
-    <arg name="estimator" default="ekf_filter" />
+    <arg name="is_hardware" default="false" />
+    <arg name="estimator" default="comp_filter" />
     <arg name="ground_truth" default="sim" />
 
     <!-- Launch the robot driver node -->

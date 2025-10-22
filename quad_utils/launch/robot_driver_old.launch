@@ -9,7 +9,7 @@
     <arg name="logging" default="false" />
     <arg name="controller" default="inverse_dynamics" />
     <arg name="is_hardware" default="false" />
-    <arg name="estimator" default="ekf_filter" />
+    <arg name="estimator" default="comp_filter" />
 
     <!-- Launch the robot driver node -->
     <node name="robot_driver" pkg="robot_driver" type="robot_driver_node" output="screen" ns="/robot_1/">
