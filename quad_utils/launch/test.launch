@@ -48,9 +48,10 @@
       <param name="publish_frequency" type="double" value="1000.0"/>
       <remap from="joint_states" to="/state/joints" />
     </node>
+
   <!-- Load the visualization tools  -->
-    <node pkg="rviz" type="rviz" name="rviz" respawn="false" output="screen"
-      args="-d $(find jamal_description)/launch/check_joint.rviz"/>
+    <!-- <node pkg="rviz" type="rviz" name="rviz" respawn="false" output="screen"
+      args="-d $(find jamal_description)/launch/check_joint.rviz"/> -->
 
     <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find quad_utils)/rviz/quad_viewer.rviz"/>
     <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/> -->
@@ -58,11 +59,14 @@
         <!-- Start the heartbeat node -->
     <node name="remote_heartbeat" pkg="quad_utils" type="remote_heartbeat_node" output="screen" />
     
-    <!-- <include file="$(find quad_utils)/launch/quad_visualization.launch">
+    <include file="$(find quad_utils)/launch/quad_visualization.launch">
       <arg name="robot_type" value="$(arg robot_type)" />
       <arg name="live_plot" value="$(arg live_plot)" />
       <arg name="dash" value="$(arg dash)" />
-    </include> -->
+    </include>
     <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/>
+
+    <!-- Load the contact state publisher -->
+    <node name="contact_state_publisher" pkg="gazebo_scripts" type="contact_state_publisher_node" output="screen"/>
 
 </launch>

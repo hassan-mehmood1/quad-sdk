@@ -10,7 +10,7 @@ TrajectoryPublisher::TrajectoryPublisher(ros::NodeHandle nh) {
   nh.param<std::string>("topics/state/trajectory", trajectory_state_topic,
                         "/state/trajectory");
 
-  nh.param<std::string>("map_frame", map_frame_, "map");
+  nh.param<std::string>("map_frame", map_frame_, "robot_1_ground_truth/map");
   nh.param<std::string>("trajectory_publisher/traj_source", traj_source_,
                         "topic");
   nh.param<double>("trajectory_publisher/update_rate", update_rate_, 30);
