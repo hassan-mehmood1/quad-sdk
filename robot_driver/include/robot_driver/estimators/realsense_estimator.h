@@ -39,6 +39,9 @@ class RealsenseEstimator : public StateEstimator {
   nav_msgs::Odometry last_odom;
 
   ros::Time last_odom_upd_time;
+
+  ros::Subscriber odom_sub_;
+
 };
 
 #endif  // RS_EST_H

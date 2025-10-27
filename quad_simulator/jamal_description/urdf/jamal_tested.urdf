@@ -359,12 +359,26 @@
     <kp value="1000000.0"/>
     <kd value="1.0"/>
   </gazebo>
-  <link name="map"/>
+  <!-- <link name="map"/>
   <joint name="base_static_joint" type="fixed">
     <origin rpy="0 0 0" xyz="0 0 0"/>
     <parent link="map"/>
     <child link="body"/>
+  </joint> -->
+  <link name="map"/>
+  <joint name="map_to_odom" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="map"/>
+    <child link="odom"/>
   </joint>
+
+  <link name="odom"/>
+  <joint name="odom_to_base" type="fixed">
+    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <parent link="odom"/>
+    <child link="body"/>
+  </joint>
+
   <link name="body">
     <visual>
       <origin rpy="0 0 0" xyz="0 0 0"/>
@@ -374,7 +388,7 @@
     </visual>
   </link>
   <joint name="floating_base" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0.07"/>
     <parent link="body"/>
     <child link="trunk"/>
   </joint>
@@ -398,6 +412,22 @@
       <inertia ixx="0.0565667940678376" ixy="-8.54731557026013e-06" ixz="3.411601276539e-05" iyy="0.0364645326398335" iyz="-4.86965244292946e-06" izz="0.0737588756462406"/>
     </inertial>
   </link>
+
+  <link name="t265_link">
+    <!-- <visual>
+      <origin rpy="0 0 0" xyz="0.002 0.0025 0.0"/>
+      <geometry>
+        <mesh filename="package://ylo2_description/meshes/body/textured/ylo2_t265_textured.dae" scale="1 1.06 1.04"/>
+      </geometry>
+      <material name="black"/>
+    </visual> -->
+  </link>
+  <joint name="t265_joint" type="fixed">
+    <parent link="trunk"/>
+    <child link="t265_link"/>
+    <origin rpy="0 0 0" xyz="0.175 0 0.08"/>
+  </joint>
+
   <joint name="imu_joint" type="fixed">
     <parent link="trunk"/>
     <child link="imu_link"/>

@@ -16,11 +16,12 @@
     <param name="robot_type" value="$(arg robot_type)" />
     <param name="mocap" value="$(arg mocap)" />
 
-    <!-- <include file="$(find quad_utils)/launch/mapping.launch">
+    <include file="$(find quad_utils)/launch/mapping.launch">
     <arg name="input_type" value="mesh" />
     <arg name="world" value="$(arg world)" />
     <arg name="robot_type" value="$(arg robot_type)" />
-    </include> -->
+    </include>
+
     <include file="$(find quad_utils)/launch/load_global_params.launch">
         <arg name="robot_type" value="$(arg robot_type)"/>
     </include>
@@ -48,11 +49,11 @@
       <remap from="joint_states" to="/state/joints" />
     </node>
   <!-- Load the visualization tools  -->
-    <node pkg="rviz" type="rviz" name="rviz" respawn="false" output="screen"
-      args="-d $(find jamal_description)/launch/check_joint.rviz"/>
+    <!-- <node pkg="rviz" type="rviz" name="rviz" respawn="false" output="screen"
+      args="-d $(find jamal_description)/launch/check_joint.rviz"/> -->
 
-    <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find quad_utils)/rviz/quad_viewer.rviz"/>
-    <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/> -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find quad_utils)/rviz/quad_viewer.rviz"/>
+    <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/>
 
         <!-- Start the heartbeat node -->
     <node name="remote_heartbeat" pkg="quad_utils" type="remote_heartbeat_node" output="screen" />
@@ -62,6 +63,6 @@
       <arg name="live_plot" value="$(arg live_plot)" />
       <arg name="dash" value="$(arg dash)" />
     </include> -->
-    <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/>
+    <!-- <node name="rviz_interface" pkg="quad_utils" type="rviz_interface_node" output="screen"/> -->
 
 </launch>

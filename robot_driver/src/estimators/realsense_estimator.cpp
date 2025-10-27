@@ -7,6 +7,10 @@ using KDL::PI;
 void RealsenseEstimator::init(ros::NodeHandle& nh) {
   ROS_INFO("Realsense estimator initialized");
   nh_ = nh;
+
+    // Subscribe to RealSense odometry
+  odom_sub_ = nh_.subscribe("/tracking_camera/odom/sample", 1,
+                            &RealsenseEstimator::updateOdomMsg, this);
 }
 
 bool RealsenseEstimator::updateOnce(quad_msgs::RobotState& last_robot_state_msg) {

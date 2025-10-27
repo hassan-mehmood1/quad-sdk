@@ -62,7 +62,7 @@ LocalPlanner::LocalPlanner(ros::NodeHandle nh)
                            stand_pos_error_threshold_);
 
   // Load system parameters from launch file (not in config file)
-  nh.param<bool>("local_planner/use_twist_input", use_twist_input_, false);
+  nh.param<bool>("local_planner/use_twist_input", use_twist_input_, true);
 
   // Convert kinematics
   quadKD_ = std::make_shared<quad_utils::QuadKD>();
@@ -586,6 +586,13 @@ void LocalPlanner::spin() {
 
   while (ros::ok()) {
     ros::spinOnce();
+    /////////////////////////////////////////
+    if (terrain_.isEmpty())
+      ROS_WARN_THROTTLE(1.0, "Terrain map is empty");
+    if (robot_state_msg_ == NULL)
+      ROS_WARN_THROTTLE(1.0, "Robot state not received");
+    if (body_plan_msg_ == NULL && !use_twist_input_)
+      ROS_WARN_THROTTLE(1.0, "Body plan missing (twist disabled)");
 
     // Wait until all required data has been received
     if (terrain_.isEmpty() || (body_plan_msg_ == NULL && !use_twist_input_) ||

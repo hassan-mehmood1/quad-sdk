@@ -43,7 +43,7 @@ RobotDriver::RobotDriver(ros::NodeHandle nh, int argc, char **argv) {
                                   controller_id_,
                                   std::string("inverse_dynamics"));
   quad_utils::loadROSParamDefault(nh_, "robot_driver/estimator", estimator_id_,
-                                  std::string("comp_filter"));
+                                  std::string("ekf_filter"));
   quad_utils::loadROSParam(nh_, "/robot_driver/update_rate", update_rate_);
   quad_utils::loadROSParam(nh_, "/robot_driver/publish_rate", publish_rate_);
   quad_utils::loadROSParam(nh_, "/robot_driver/mocap_rate", mocap_rate_);
@@ -177,9 +177,9 @@ void RobotDriver::initStateEstimator() {
     // state_estimator_ = std::make_shared<CompFilterEstimator>();
     state_estimator_ = std::make_shared<EKFEstimator>();
   } else if (estimator_id_ == "ekf_filter") {
-    state_estimator_ = std::make_shared<EKFEstimator>();
+    // state_estimator_ = std::make_shared<EKFEstimator>();
     ///////for hardware
-    // state_estimator_ = std::make_shared<RealsenseEstimator>();
+    state_estimator_ = std::make_shared<RealsenseEstimator>();
   } else {
     ROS_ERROR_STREAM("Invalid estimator id " << estimator_id_
                                              << ", returning nullptr");
