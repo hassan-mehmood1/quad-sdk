@@ -28,6 +28,7 @@
 #include "robot_driver/estimators/comp_filter_estimator.h"
 #include "robot_driver/estimators/ekf_estimator.h"
 #include "robot_driver/estimators/realsense_estimator.h"
+#include "robot_driver/estimators/unitree_estimator.h"
 #include "robot_driver/estimators/state_estimator.h"
 #include "robot_driver/hardware_interfaces/hardware_interface.h"
 // #include "robot_driver/hardware_interfaces/ylo2_interface.h"
