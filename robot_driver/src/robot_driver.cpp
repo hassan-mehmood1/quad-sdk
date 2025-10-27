@@ -177,9 +177,9 @@ void RobotDriver::initStateEstimator() {
     // state_estimator_ = std::make_shared<CompFilterEstimator>();
     state_estimator_ = std::make_shared<EKFEstimator>();
   } else if (estimator_id_ == "ekf_filter") {
-    // state_estimator_ = std::make_shared<EKFEstimator>();
+    state_estimator_ = std::make_shared<EKFEstimator>();
     ///////for hardware
-    state_estimator_ = std::make_shared<RealsenseEstimator>();
+    // state_estimator_ = std::make_shared<RealsenseEstimator>();
   } else {
     ROS_ERROR_STREAM("Invalid estimator id " << estimator_id_
                                              << ", returning nullptr");
