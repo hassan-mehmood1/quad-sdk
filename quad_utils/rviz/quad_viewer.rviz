@@ -6,7 +6,6 @@ Panels:
       Expanded:
         - /Global Options1
         - /Robot 1 Ground Truth State1
-        - /Robot 1 Ground Truth State1/Status1
         - /TF1
         - /TF1/Tree1
       Splitter Ratio: 0.5008665323257446
@@ -205,7 +204,7 @@ Visualization Manager:
           Value: true
       Name: Robot 1 Ground Truth State
       Robot Description: robot_description
-      TF Prefix: robot_1_ground_truth
+      TF Prefix: ""
       Update Interval: 0
       Value: true
       Visual Enabled: true
@@ -278,7 +277,7 @@ Visualization Manager:
       Marker Topic: /visualization/current_grf
       Name: Robot 1 Desired GRFs
       Namespaces:
-        {}
+        "": true
       Queue Size: 100
       Value: true
     - Class: rviz/MarkerArray

@@ -367,7 +367,7 @@
   </joint> -->
   <link name="map"/>
   <joint name="map_to_odom" type="fixed">
-    <origin rpy="0 0 0" xyz="0 0 0"/>
+    <origin rpy="0 0 0" xyz="0 0 0.0665"/>
     <parent link="map"/>
     <child link="odom"/>
   </joint>
@@ -425,7 +425,7 @@
   <joint name="t265_joint" type="fixed">
     <parent link="trunk"/>
     <child link="t265_link"/>
-    <origin rpy="0 0 0" xyz="0.175 0 0.08"/>
+    <origin rpy="0 0.08 0" xyz="0.175 0 0.08"/>
   </joint>
 
   <joint name="imu_joint" type="fixed">
